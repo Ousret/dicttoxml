@@ -1,1 +1,2 @@
-include *.markdown *.txt
+include *.markdown *.txt *.md
+
