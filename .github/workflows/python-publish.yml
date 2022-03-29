@@ -5,11 +5,8 @@ on:
     types: [created]
 
 jobs:
-
   tests:
     runs-on: ${{ matrix.os }}
-    needs:
-      - lint
 
     strategy:
       fail-fast: false
@@ -57,3 +54,4 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+
