@@ -3,7 +3,7 @@ from re import search
 
 
 def get_version():
-    with open('charset_normalizer/version.py') as version_file:
+    with open('dicttoxml2/version.py') as version_file:
         return search(r"""__version__\s+=\s+(['"])(?P<version>.+?)\1""", version_file.read()).group('version')
 
 
