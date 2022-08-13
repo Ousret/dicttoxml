@@ -17,6 +17,13 @@ from .version import __version__, version
 
 from logging import getLogger, NullHandler
 
+__all__ = (
+    "dicttoxml",
+    "set_debug",
+    "version",
+    "__version__",
+)
+
 logger = getLogger("dicttoxml")
 logger.addHandler(NullHandler())
 
