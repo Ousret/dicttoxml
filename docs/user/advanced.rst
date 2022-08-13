@@ -196,8 +196,11 @@ You may want to make list folding act differently. To do so, please set the para
 
 Example:
 
-
     {'book': [{'title': 'Python Programming', 'license': 'GPL', 'author': ['Adam', 'Benny', 'Charlie']}, {'license': 'Apache 2.0', 'title': 'Business Modelling'}]}
+
+Code:
+
+    >>> dicttoxml2.dicttoxml(payload, fold_list=False, attr_type=False)
 
 Output:
 
