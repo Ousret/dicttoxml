@@ -10,5 +10,5 @@ Main Interfaces
 
 Those functions are publicly exposed and are protected through our BC guarantee.
 
-.. autofunction:: from_bytes
+.. autofunction:: dicttoxml
 
