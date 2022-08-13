@@ -8,6 +8,7 @@ Version 2.1.0
 * Changes:
   * Handling bool values properly
   * Support for disabling default list folding
+  * Fix converting dict having integer as key
   * Add /docs
 
 Version 2.0.0

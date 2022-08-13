@@ -77,3 +77,9 @@ def test_folding_list_ignored() -> None:
     payload: dict = {'book': [{'title': 'Python Programming', 'license': 'GPL', 'author': ['Adam', 'Benny', 'Charlie']}, {'license': 'Apache 2.0', 'title': 'Business Modelling'}]}
 
     assert dicttoxml(payload, fold_list=False, attr_type=False) == b'<?xml version="1.0" encoding="UTF-8" ?><root><book><title>Python Programming</title><license>GPL</license><author>Adam</author><author>Benny</author><author>Charlie</author></book><book><license>Apache 2.0</license><title>Business Modelling</title></book></root>'
+
+
+def test_fix_dict_integer_key() -> None:
+    payload: dict = {1: "abc"}
+
+    assert dicttoxml(payload) == b'<?xml version="1.0" encoding="UTF-8" ?><root><n1 type="str">abc</n1></root>'
