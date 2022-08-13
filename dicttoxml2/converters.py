@@ -10,7 +10,7 @@ from .utils import get_unique_id, get_xml_type, make_valid_xml_name, make_attrst
 logger = getLogger("dicttoxml")
 
 
-def convert(obj: Any, ids: bool, attr_type: bool, item_func: Callable[[Any], str], cdata: bool, parent: str = 'root'):
+def convert(obj: Any, ids: bool, attr_type: bool, item_func: Callable[[Any], str], cdata: bool, fold_list: bool, parent: str = 'root'):
     """Routes the elements of an object to the right function to convert them
     based on their data type"""
 
@@ -31,15 +31,15 @@ def convert(obj: Any, ids: bool, attr_type: bool, item_func: Callable[[Any], str
         return convert_kv(item_name, obj.isoformat(), attr_type, cdata=cdata)
 
     if isinstance(obj, dict):
-        return convert_dict(obj, ids, parent, attr_type, item_func, cdata=cdata)
+        return convert_dict(obj, ids, parent, attr_type, item_func, cdata=cdata, fold_list=fold_list)
 
     if isinstance(obj, Iterable):
-        return convert_list(obj, ids, parent, attr_type, item_func, cdata=cdata)
+        return convert_list(obj, ids, parent, attr_type, item_func, cdata=cdata, fold_list=fold_list)
 
     raise TypeError('Unsupported data type: %s (%s)' % (obj, type(obj).__name__))
 
 
-def convert_dict(obj: Mapping, ids: bool, parent: str, attr_type: bool, item_func: Callable[[Any], str], cdata: bool):
+def convert_dict(obj: Mapping, ids: bool, parent: str, attr_type: bool, item_func: Callable[[Any], str], cdata: bool, fold_list: bool):
     """Converts a dict into an XML string."""
     logger.debug('Inside convert_dict(): obj type is: "%s", obj="%s"' % (type(obj).__name__, obj))
     output = []
@@ -63,17 +63,22 @@ def convert_dict(obj: Mapping, ids: bool, parent: str, attr_type: bool, item_fun
         elif isinstance(val, dict):
             if attr_type:
                 attr['type'] = get_xml_type(val)
-            output.append('<%s%s>%s</%s>' % (key, make_attrstring(attr), convert_dict(val, ids, key, attr_type, item_func, cdata), key))
+            output.append('<%s%s>%s</%s>' % (key, make_attrstring(attr), convert_dict(val, ids, key, attr_type, item_func, cdata, fold_list), key))
 
         elif isinstance(val, list):
             if attr_type:
                 attr['type'] = get_xml_type(val)
-            output.append('<%s%s>%s</%s>' % (
-                key,
-                make_attrstring(attr),
-                convert_list(val, ids, key, attr_type, item_func, cdata),
-                key
-            ))
+            if fold_list:
+                output.append('<%s%s>%s</%s>' % (
+                    key,
+                    make_attrstring(attr),
+                    convert_list(val, ids, key, attr_type, item_func, cdata, fold_list),
+                    key
+                ))
+            else:
+                output.append(
+                    convert_list(val, ids, key, attr_type, item_func, cdata, fold_list)
+                )
 
         elif val is None:
             output.append(convert_none(key, val, attr_type, attr, cdata))
@@ -84,12 +89,12 @@ def convert_dict(obj: Mapping, ids: bool, parent: str, attr_type: bool, item_fun
     return ''.join(output)
 
 
-def convert_list(items: Iterable, ids: bool, parent: str, attr_type: bool, item_func: Callable[[Any], str], cdata: bool):
+def convert_list(items: Iterable, ids: bool, parent: str, attr_type: bool, item_func: Callable[[Any], str], cdata: bool, fold_list: bool):
     """Converts a list into an XML string."""
     logger.debug('Inside convert_list()')
     output = []
 
-    item_name = item_func(parent)
+    item_name = item_func(parent) if fold_list else parent
 
     if ids:
         this_id = get_unique_id(parent)
@@ -109,14 +114,14 @@ def convert_list(items: Iterable, ids: bool, parent: str, attr_type: bool, item_
             if not attr_type:
                 output.append('<%s>%s</%s>' % (
                     item_name,
-                    convert_dict(item, ids, parent, attr_type, item_func, cdata),
+                    convert_dict(item, ids, parent, attr_type, item_func, cdata, fold_list),
                     item_name,
                 )
                         )
             else:
                 output.append('<%s type="dict">%s</%s>' % (
                     item_name,
-                    convert_dict(item, ids, parent, attr_type, item_func, cdata),
+                    convert_dict(item, ids, parent, attr_type, item_func, cdata, fold_list),
                     item_name,
                 )
                         )
@@ -125,14 +130,14 @@ def convert_list(items: Iterable, ids: bool, parent: str, attr_type: bool, item_
             if not attr_type:
                 output.append('<%s %s>%s</%s>' % (
                     item_name, make_attrstring(attr),
-                    convert_list(item, ids, item_name, attr_type, item_func, cdata),
+                    convert_list(item, ids, item_name, attr_type, item_func, cdata, fold_list),
                     item_name,
                 )
                         )
             else:
                 output.append('<%s type="list"%s>%s</%s>' % (
                     item_name, make_attrstring(attr),
-                    convert_list(item, ids, item_name, attr_type, item_func, cdata),
+                    convert_list(item, ids, item_name, attr_type, item_func, cdata, fold_list),
                     item_name,
                 )
                         )

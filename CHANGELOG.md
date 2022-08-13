@@ -1,6 +1,15 @@
 Revision History
 ================
 
+Version 2.1.0
+-------------
+
+* Release Date: 2022-08-13
+* Changes:
+  * Handling bool values properly
+  * Support for disabling default list folding
+  * Add /docs
+
 Version 2.0.0
 -------------
 
