@@ -1,2 +1,3 @@
-include *.markdown *.txt *.md
-
+include *.markdown *.txt *.md dicttoxml2/py.typed
+recursive-include docs *
+recursive-include tests *
