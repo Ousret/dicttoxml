@@ -21,14 +21,14 @@ def convert(obj: Any, ids: bool, attr_type: bool, item_func: Callable[[Any], str
     if obj is None:
         return convert_none(item_name, '', attr_type, cdata=cdata)
 
+    if isinstance(obj, bool):
+        return convert_bool(item_name, obj, attr_type, cdata=cdata)
+
     if isinstance(obj, (Number, str)):
         return convert_kv(item_name, obj, attr_type, cdata=cdata)
 
     if isinstance(obj, datetime):
         return convert_kv(item_name, obj.isoformat(), attr_type, cdata=cdata)
-
-    if isinstance(obj, bool):
-        return convert_bool(item_name, obj, attr_type, cdata=cdata)
 
     if isinstance(obj, dict):
         return convert_dict(obj, ids, parent, attr_type, item_func, cdata=cdata)
@@ -53,14 +53,12 @@ def convert_dict(obj: Mapping, ids: bool, parent: str, attr_type: bool, item_fun
 
         key, attr = make_valid_xml_name(key, attr)
 
-        if isinstance(val, (Number, str)):
+        if isinstance(val, bool):
+            output.append(convert_bool(key, val, attr_type, attr, cdata))
+        elif isinstance(val, (Number, str)):
             output.append(convert_kv(key, val, attr_type, attr, cdata))
-
         elif isinstance(val, datetime):
             output.append(convert_kv(key, val.isoformat(), attr_type, attr, cdata))
-
-        elif isinstance(val, bool):
-            output.append(convert_bool(key, val, attr_type, attr, cdata))
 
         elif isinstance(val, dict):
             if attr_type:
@@ -101,15 +99,12 @@ def convert_list(items: Iterable, ids: bool, parent: str, attr_type: bool, item_
 
         attr = {} if not ids else { 'id': '%s_%s' % (this_id, i + 1)}
 
-        if isinstance(item, (Number, str)):
+        if isinstance(item, bool):
+            output.append(convert_bool(item_name, item, attr_type, attr, cdata))
+        elif isinstance(item, (Number, str)):
             output.append(convert_kv(item_name, item, attr_type, attr, cdata))
-
         elif isinstance(item, datetime):
             output.append(convert_kv(item_name, item.isoformat(), attr_type, attr, cdata))
-
-        elif isinstance(item, bool):
-            output.append(convert_bool(item_name, item, attr_type, attr, cdata))
-
         elif isinstance(item, dict):
             if not attr_type:
                 output.append('<%s>%s</%s>' % (
@@ -187,7 +182,11 @@ def convert_bool(key: str, val: Any, attr_type: bool, attr: Dict[str, str] = Non
 
     attrstring = make_attrstring(attr)
 
-    return '<%s%s>%s</%s>' % (key, attrstring, str(val).lower(), key)
+    return '<%s%s>%s</%s>' % (
+        key, attrstring,
+        wrap_cdata(val) if cdata is True else str(val),
+        key
+    )
 
 
 def convert_none(key: str, val: Any, attr_type: bool, attr: Dict[str, str] = None, cdata: bool = False):

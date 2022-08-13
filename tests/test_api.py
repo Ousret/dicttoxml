@@ -1,4 +1,5 @@
 import pytest
+from collections import OrderedDict
 from dicttoxml2 import dicttoxml
 
 
@@ -57,3 +58,16 @@ def test_disable_root() -> None:
                       b'</mydict><ok type="bool">True</ok>'
 
     assert dicttoxml(payload, root=False) == expected
+
+
+def test_primitive_bool_convert() -> None:
+    data = OrderedDict()
+
+    data['true'] = True
+    data['false'] = False
+    data['int'] = 42
+    data['float'] = 42.0
+    data['None'] = None
+    data['string'] = 'str_value'
+
+    assert dicttoxml(data, root=False, attr_type=False) == b"<true>True</true><false>False</false><int>42</int><float>42.0</float><None></None><string>str_value</string>"
