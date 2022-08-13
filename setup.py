@@ -20,7 +20,7 @@ setup(
     author='Ryan McGreal',
     author_email='ryan@quandyfactory.com',
     license='GPL-2.0',
-    url='https://github.com/quandyfactory/dicttoxml',
+    url='https://github.com/Ousret/dicttoxml',
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
