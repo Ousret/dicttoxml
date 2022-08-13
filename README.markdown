@@ -1,5 +1,16 @@
-Dictionary to XML
-=================
+<h1 align="center">Dict to XML</h1>
+
+<p align="center">
+  <a href="https://pypi.org/project/dicttoxml2">
+    <img src="https://img.shields.io/pypi/pyversions/dicttoxml2.svg?orange=blue" />
+  </a>
+  <a href="https://codecov.io/gh/Ousret/dicttoxml">
+      <img src="https://codecov.io/gh/Ousret/dicttoxml/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://pepy.tech/project/dicttoxml2/">
+    <img alt="Download Count Total" src="https://pepy.tech/badge/dicttoxml2/month" />
+  </a>
+</p>
 
 Converts a Python dictionary or other native data type into a valid XML string. 
 This is a fork that support Python 3.9 and forward versions and drop all EOL (<=3.6) versions altogether.
