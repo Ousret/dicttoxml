@@ -188,3 +188,34 @@ To turn debug mode off, just call `set_debug` with an argument of `False`:
     Debug mode is off.
 
 If you encounter any errors in the code, please file an issue on github: [https://github.com/Ousret/dicttoxml/issues](https://github.com/Ousret/dicttoxml/issues).
+
+List Folding
+============
+
+You may want to make list folding act differently. To do so, please set the parameter `fold_list=False`.
+
+Example:
+
+    {'book': [{'title': 'Python Programming', 'license': 'GPL', 'author': ['Adam', 'Benny', 'Charlie']}, {'license': 'Apache 2.0', 'title': 'Business Modelling'}]}
+
+Code:
+
+    >>> dicttoxml2.dicttoxml(payload, fold_list=False, attr_type=False)
+
+Output:
+
+    <?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+    <root>
+      <book>
+        <title>Python Programming</title>
+        <license>GPL</license>
+        <author>Adam</author>
+        <author>Benny</author>
+        <author>Charlie</author>
+      </book>
+      <book>
+        <license>Apache 2.0</license>
+        <title>Business Modelling</title>
+      </book>
+    </root>
+
